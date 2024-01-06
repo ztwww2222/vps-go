@@ -8,11 +8,11 @@ vps纯隧道专用版，支持临时隧道订阅，固定隧道订阅
 
 
 ```
-bash <(wget -qO- https://raw.githubusercontent.com/dsadsadsss/vps-argo/main/install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/ztwww2222/vps-go/main/install.sh)
 ```
 或者
 ```
-bash <(curl -sL https://raw.githubusercontent.com/dsadsadsss/vps-argo/main/install.sh)
+bash <(curl -sL https://raw.githubusercontent.com/ztwww2222/vps-go/main/install.sh)
 ```
 
 
