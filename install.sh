@@ -288,22 +288,6 @@ while [ $counter -lt $max_attempts ]; do
   fi
 done
 
-echo "                         "
-echo "**************节点信息(去掉-)*********************   "
-echo "                         "
-if [ -s "${FLIE_PATH}list.log" ]; then
-  sed 's/{PASS}/v-l-ess/g' ${FLIE_PATH}list.log | cat
-else
-  if [ -s "/tmp/list.log" ]; then
-    sed 's/{PASS}/v-l-ess/g' /tmp/list.log | cat
-  fi
-fi
-echo "                         "
-echo "***************************************************"
-echo "                         "
-echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
-echo "                         "
-echo "***************************************************"
 }
 
 # 获取Linux发行版名称，并赋值给$linux_dist变量
@@ -368,23 +352,6 @@ while [ $counter -lt $max_attempts ]; do
     ((counter++))
   fi
 done
-
-echo "                         "
-echo "**************节点信息(去掉-)*********************   "
-echo "                         "
-if [ -s "${FLIE_PATH}list.log" ]; then
-  sed 's/{PASS}/v-l-ess/g' ${FLIE_PATH}list.log | cat
-else
-  if [ -s "/tmp/list.log" ]; then
-    sed 's/{PASS}/v-l-ess/g' /tmp/list.log | cat
-  fi
-fi
-echo "                         "
-echo "***************************************************"
-echo "                         "
-echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
-echo "                         "
-echo "***************************************************"
         ;;
     2)
         # 添加到开机启动再启动
