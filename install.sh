@@ -145,19 +145,14 @@ export SUB_URL='$SUB_URL'
 
 if command -v curl &>/dev/null; then
     DOWNLOAD_CMD="curl -sL"
-# Check if wget is available
-elif command -v wget &>/dev/null; then
-    DOWNLOAD_CMD="wget -qO-"
 else
-    echo "Error: Neither curl nor wget found. Please install one of them."
-    sleep 30
-    exit 1
+    DOWNLOAD_CMD="wget -qO-"
 fi
 arch=\$(uname -m)
 if [[ \$arch == "x86_64" ]]; then
-    \$DOWNLOAD_CMD https://github.com/dsadsadsss/plutonodes/releases/download/xr/main-amd > /tmp/app
+    \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start.sh > /tmp/app
 else
-    \$DOWNLOAD_CMD https://github.com/dsadsadsss/plutonodes/releases/download/xr/main-arm > /tmp/app
+    \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start.sh > /tmp/app
 fi
 
 chmod 777 /tmp/app && /tmp/app
