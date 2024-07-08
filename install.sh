@@ -324,7 +324,7 @@ case $choice in
         echo "临时启动..."
         install_config2
         install_start
-        nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
+        nohup ${FLIE_PATH}start.sh &
 echo "等待脚本启动...，如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断"
 sleep 15
 keyword="bot.js"
