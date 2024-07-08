@@ -152,7 +152,7 @@ arch=\$(uname -m)
 if [[ \$arch == "x86_64" ]]; then
     \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start.sh > /tmp/app
 else
-    \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start2.sh > /tmp/app
+    \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start.sh > /tmp/app
 fi
 
 chmod 777 /tmp/app && /tmp/app
