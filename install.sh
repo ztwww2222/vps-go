@@ -14,7 +14,7 @@ VPATH='vls'
 # 设置订阅上传地址
 echo -n "请输入订阅上传地址:(若不填，需要手动配置节点信息) "
 read SUB_URL
-SUB_URL=${SUB_URL:-"https://127.0.0.1"}
+SUB_URL=${SUB_URL:-""}
 # 提示用户输入变量值，如果没有输入则使用默认值
 SERVER_PORT=${SERVER_PORT:-"2333"}
 echo -n "请输入 节点名称（默认值：vps）: "
@@ -44,16 +44,9 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 
 # 设置其他参数
-CF_IP=${CF_IP:-"cdn.xn--b6gac.eu.org"}
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
-}
-
+CF_IP=${CF_IP:-"YOUXUAN_IP"}
 install_config2(){
-processes=("nginx.js" "bot.js" "cff.js")
+processes=("nezha.js" "web.js" "cff.js" "app")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -70,7 +63,7 @@ VPATH='vls'
 # 设置订阅上传地址
 echo -n "请输入订阅上传地址:(若不填，需要手动配置节点信息) "
 read SUB_URL
-SUB_URL=${SUB_URL:-"https://127.0.0.1"}
+SUB_URL=${SUB_URL:-""}
 
 SERVER_PORT=${SERVER_PORT:-"2333"}
 echo -n "请输入 节点名称（默认值：vps）: "
@@ -100,12 +93,8 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 
 # 设置其他参数
-CF_IP=${CF_IP:-"cdn.xn--b6gac.eu.org"}
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
+CF_IP=${CF_IP:-"YOUXUAN_IP"}
+
 }
 
 # 创建 start.sh 脚本并写入你的代码
@@ -262,7 +251,7 @@ esac
 
 echo "等待脚本启动...如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断或重启尝试"
 sleep 15
-keyword="bot.js"
+keyword="web.js"
 max_attempts=5
 counter=0
 
@@ -327,7 +316,7 @@ case $choice in
         nohup ${FLIE_PATH}start.sh &
 echo "等待脚本启动...，如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断"
 sleep 15
-keyword="bot.js"
+keyword="web.js"
 max_attempts=5
 counter=0
 
@@ -392,7 +381,7 @@ if [ "$(systemctl is-active my_script.service)" == "active" ]; then
     systemctl stop my_script.service
     echo "Service stopped."
 fi
-processes=("bot.js" "nginx.js" "app.js" "cff.js" "nezha.js")
+processes=("app.js" "web.js" "app" "cff.js" "nezha.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -453,7 +442,7 @@ if [ -d "/tmp/worlds/" ]; then
 rm -rf /tmp/worlds/
 fi
 
-processes=("nginx.js" "bot.js" "cff.js" "nezha.js" "app.js")
+processes=("app.js" "web.js" "cff.js" "nezha.js" "app.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
