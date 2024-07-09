@@ -43,7 +43,7 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
-CF_IP=${CF_IP:-"ip.sb"}
+CF_IP=${CF_IP:-"YOUXUAN_IP"}
 # 设置其他参数
 
 if [[ $PWD == */ ]]; then
@@ -96,7 +96,7 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 
 # 设置其他参数
-CF_IP=${CF_IP:-"cdn.xn--b6gac.eu.org"}
+CF_IP=${CF_IP:-"YOUXUAN_IP"}
 if [[ $PWD == */ ]]; then
   FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
 else
