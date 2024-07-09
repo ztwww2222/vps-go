@@ -11,10 +11,6 @@ read UUID
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
 VPATH='vls'
 
-# 设置订阅上传地址
-echo -n "请输入订阅上传地址:(若不填，需要手动配置节点信息) "
-read SUB_URL
-SUB_URL=${SUB_URL:-""}
 # 提示用户输入变量值，如果没有输入则使用默认值
 SERVER_PORT=${SERVER_PORT:-"2333"}
 echo -n "请输入 节点名称（默认值：vps）: "
@@ -23,7 +19,6 @@ SUB_NAME=${SUB_NAME:-"vps"}
 
 echo -n "请输入 NEZHA_SERVER（不需要就不填）: "
 read NEZHA_SERVER
-
 
 echo -n "请输入 NEZHA_KEY (不需要就不填): "
 read NEZHA_KEY
@@ -38,15 +33,24 @@ read NEZHA_TLS
 NEZHA_TLS=${NEZHA_TLS:-"1"}
 
 # 设置固定隧道参数
-echo -n "请输入固定隧道token(不填则使用临时隧道) : "
+echo -n "请输入固定隧道token或者json(不填则使用临时隧道) : "
 read TOK
 echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
 read ARGO_DOMAIN
-
+echo -n "请输入CF优选IP(默认ip.sb) : "
+read CF_IP
+CF_IP=${CF_IP:-"ip.sb"}
 # 设置其他参数
-CF_IP=${CF_IP:-"YOUXUAN_IP"}
+
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
+}
+
 install_config2(){
-processes=("nezha.js" "web.js" "cff.js" "app")
+processes=("nginx.js" "bot.js" "cff.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -60,11 +64,6 @@ read UUID
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
 VPATH='vls'
 
-# 设置订阅上传地址
-echo -n "请输入订阅上传地址:(若不填，需要手动配置节点信息) "
-read SUB_URL
-SUB_URL=${SUB_URL:-""}
-
 SERVER_PORT=${SERVER_PORT:-"2333"}
 echo -n "请输入 节点名称（默认值：vps）: "
 read SUB_NAME
@@ -87,14 +86,18 @@ read NEZHA_TLS
 NEZHA_TLS=${NEZHA_TLS:-"1"}
 
 # 设置固定隧道参数
-echo -n "请输入固定隧道token(不填则使用临时隧道) : "
+echo -n "请输入固定隧道token或者json(不填则使用临时隧道) : "
 read TOK
 echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
 read ARGO_DOMAIN
 
 # 设置其他参数
-CF_IP=${CF_IP:-"YOUXUAN_IP"}
-
+CF_IP=${CF_IP:-"cdn.xn--b6gac.eu.org"}
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
 }
 
 # 创建 start.sh 脚本并写入你的代码
@@ -134,14 +137,19 @@ export SUB_URL='$SUB_URL'
 
 if command -v curl &>/dev/null; then
     DOWNLOAD_CMD="curl -sL"
-else
+# Check if wget is available
+elif command -v wget &>/dev/null; then
     DOWNLOAD_CMD="wget -qO-"
+else
+    echo "Error: Neither curl nor wget found. Please install one of them."
+    sleep 30
+    exit 1
 fi
 arch=\$(uname -m)
 if [[ \$arch == "x86_64" ]]; then
-    \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start.sh > /tmp/app
+    \$DOWNLOAD_CMD https://github.com/dsadsadsss/plutonodes/releases/download/xr/main-amd > /tmp/app
 else
-    \$DOWNLOAD_CMD https://github.com/ztwww2222/vps-go/releases/download/a/start.sh > /tmp/app
+    \$DOWNLOAD_CMD https://github.com/dsadsadsss/plutonodes/releases/download/xr/main-arm > /tmp/app
 fi
 
 chmod 777 /tmp/app && /tmp/app
@@ -251,7 +259,7 @@ esac
 
 echo "等待脚本启动...如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断或重启尝试"
 sleep 15
-keyword="web.js"
+keyword="bot.js"
 max_attempts=5
 counter=0
 
@@ -277,6 +285,22 @@ while [ $counter -lt $max_attempts ]; do
   fi
 done
 
+echo "                         "
+echo "**************节点信息*********************   "
+echo "                         "
+if [ -s "${FLIE_PATH}list.log" ]; then
+  sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
+else
+  if [ -s "/tmp/list.log" ]; then
+    sed 's/{PASS}/vless/g' /tmp/list.log | cat
+  fi
+fi
+echo "                         "
+echo "***************************************************"
+echo "                         "
+echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
+echo "                         "
+echo "***************************************************"
 }
 
 # 获取Linux发行版名称，并赋值给$linux_dist变量
@@ -313,10 +337,10 @@ case $choice in
         echo "临时启动..."
         install_config2
         install_start
-        nohup ${FLIE_PATH}start.sh &
+        nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
 echo "等待脚本启动...，如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断"
 sleep 15
-keyword="web.js"
+keyword="bot.js"
 max_attempts=5
 counter=0
 
@@ -341,6 +365,23 @@ while [ $counter -lt $max_attempts ]; do
     ((counter++))
   fi
 done
+
+echo "                         "
+echo "**************节点信息*********************   "
+echo "                         "
+if [ -s "${FLIE_PATH}list.log" ]; then
+  sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
+else
+  if [ -s "/tmp/list.log" ]; then
+    sed 's/{PASS}/vless/g' /tmp/list.log | cat
+  fi
+fi
+echo "                         "
+echo "***************************************************"
+echo "                         "
+echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
+echo "                         "
+echo "***************************************************"
         ;;
     2)
         # 添加到开机启动再启动
@@ -381,7 +422,7 @@ if [ "$(systemctl is-active my_script.service)" == "active" ]; then
     systemctl stop my_script.service
     echo "Service stopped."
 fi
-processes=("app.js" "web.js" "app" "cff.js" "nezha.js")
+processes=("bot.js" "nginx.js" "app.js" "cff.js" "nezha.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -442,7 +483,7 @@ if [ -d "/tmp/worlds/" ]; then
 rm -rf /tmp/worlds/
 fi
 
-processes=("app" "web.js" "cff.js" "nezha.js" "app.js")
+processes=("nginx.js" "bot.js" "cff.js" "nezha.js" "app.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
