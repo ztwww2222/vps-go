@@ -54,7 +54,7 @@ fi
 }
 
 install_config2(){
-processes=("nginx.js" "bot.js" "cff.js")processes=("app.js" "web.js" "cff.js" "nezha.js" "app")
+processes=("app.js" "web.js" "cff.js" "nezha.js" "app")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
