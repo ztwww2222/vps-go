@@ -11,10 +11,6 @@ read UUID
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
 VPATH='vls'
 
-
-echo -n "请输入节点上传地址: "
-read SUB_URL
-
 # 提示用户输入变量值，如果没有输入则使用默认值
 SERVER_PORT=${SERVER_PORT:-"2333"}
 echo -n "请输入 节点名称（默认值：vps）: "
@@ -43,7 +39,7 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
-CF_IP=${CF_IP:-"YOUXUAN_IP"}
+CF_IP=${CF_IP:-"ip.sb"}
 # 设置其他参数
 
 if [[ $PWD == */ ]]; then
@@ -54,7 +50,7 @@ fi
 }
 
 install_config2(){
-processes=("app.js" "web.js" "cff.js" "nezha.js" "app")
+processes=("nginx.js" "bot.js" "cff.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -96,7 +92,7 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 
 # 设置其他参数
-CF_IP=${CF_IP:-"YOUXUAN_IP"}
+CF_IP=${CF_IP:-"cdn.xn--b6gac.eu.org"}
 if [[ $PWD == */ ]]; then
   FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
 else
@@ -116,7 +112,8 @@ fi
   cat <<EOL > ${FLIE_PATH}start.sh
 #!/bin/bash
 ## ===========================================设置各参数（不需要的可以删掉或者前面加# ）=============================================
-
+# 设置端口
+export SERVER_PORT='$SERVER_PORT'
 
 # 设置ARGO参数 (不设置默认使用临时隧道，如果设置把前面的#去掉)
 export TOK='$TOK'
@@ -132,7 +129,7 @@ export NEZHA_TLS='$NEZHA_TLS'
 export FLIE_PATH='$FLIE_PATH'
 export CF_IP='$CF_IP'
 export SUB_NAME='$SUB_NAME'
-
+export SERVER_IP='$SERVER_IP'
 ## ===========================================设置x-ra-y下载地址（建议直接使用默认）===============================
 export UUID='$UUID'
 export VPATH='$VPATH'
@@ -262,7 +259,7 @@ esac
 
 echo "等待脚本启动...如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断或重启尝试"
 sleep 15
-keyword="web.js"
+keyword="bot.js"
 max_attempts=5
 counter=0
 
@@ -343,7 +340,7 @@ case $choice in
         nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
 echo "等待脚本启动...，如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断"
 sleep 15
-keyword="web.js"
+keyword="bot.js"
 max_attempts=5
 counter=0
 
@@ -425,7 +422,7 @@ if [ "$(systemctl is-active my_script.service)" == "active" ]; then
     systemctl stop my_script.service
     echo "Service stopped."
 fi
-processes=("app.js" "web.js" "cff.js" "nezha.js" "app")
+processes=("bot.js" "nginx.js" "app.js" "cff.js" "nezha.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -486,7 +483,7 @@ if [ -d "/tmp/worlds/" ]; then
 rm -rf /tmp/worlds/
 fi
 
-processes=("app.js" "web.js" "cff.js" "nezha.js" "app")
+processes=("nginx.js" "bot.js" "cff.js" "nezha.js" "app.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
