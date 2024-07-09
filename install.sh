@@ -11,8 +11,6 @@ read UUID
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
 VPATH='vls'
 
-echo -n "请输入 上传: "
-read SUB_URL
 # 提示用户输入变量值，如果没有输入则使用默认值
 SERVER_PORT=${SERVER_PORT:-"2333"}
 echo -n "请输入 节点名称（默认值：vps）: "
