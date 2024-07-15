@@ -13,10 +13,8 @@ VPATH='vls'
 
 # 提示用户输入变量值，如果没有输入则使用默认值
 SERVER_PORT=${SERVER_PORT:-"2333"}
-
-echo -n "请输入上传地址: "
+echo -n "请输入节点上传地址: "
 read SUB_URL
-
 echo -n "请输入 节点名称（默认值：vps）: "
 read SUB_NAME
 SUB_NAME=${SUB_NAME:-"vps"}
@@ -43,9 +41,11 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
-CF_IP=${CF_IP:-"YOUXUAN_IP"}
+CF_IP=${CF_IP:-"ip.sb"}
+export ne_file=${ne_file:-'nene.js'}
+export cff_file=${cff_file:-'cff.js'}
+export web_file=${web_file:-'web.js'}
 # 设置其他参数
-
 if [[ $PWD == */ ]]; then
   FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
 else
@@ -54,7 +54,7 @@ fi
 }
 
 install_config2(){
-processes=("web.js" "nezha.js" "cff.js" "app")
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -96,12 +96,11 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 
 # 设置其他参数
-CF_IP=${CF_IP:-"YOUXUAN_IP"}
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
+FLIE_PATH="${FLIE_PATH:-/tmp/worlds/}"
+CF_IP=${CF_IP:-"ip.sb"}
+export ne_file=${ne_file:-'nene.js'}
+export cff_file=${cff_file:-'cff.js'}
+export web_file=${web_file:-'web.js'}
 }
 
 # 创建 start.sh 脚本并写入你的代码
@@ -138,7 +137,10 @@ export SERVER_IP='$SERVER_IP'
 export UUID='$UUID'
 export VPATH='$VPATH'
 export SUB_URL='$SUB_URL'
-
+## ===================================
+export ne_file='$ne_file'
+export cff_file='$cff_file'
+export web_file='$web_file'
 if command -v curl &>/dev/null; then
     DOWNLOAD_CMD="curl -sL"
 # Check if wget is available
@@ -263,7 +265,7 @@ esac
 
 echo "等待脚本启动...如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断或重启尝试"
 sleep 15
-keyword="web.js"
+keyword="$web_file"
 max_attempts=5
 counter=0
 
@@ -344,7 +346,7 @@ case $choice in
         nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
 echo "等待脚本启动...，如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断"
 sleep 15
-keyword="web.js"
+keyword="$web_file"
 max_attempts=5
 counter=0
 
@@ -426,7 +428,7 @@ if [ "$(systemctl is-active my_script.service)" == "active" ]; then
     systemctl stop my_script.service
     echo "Service stopped."
 fi
-processes=("web.js" "app" "app.js" "cff.js" "nezha.js")
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
@@ -487,7 +489,7 @@ if [ -d "/tmp/worlds/" ]; then
 rm -rf /tmp/worlds/
 fi
 
-processes=("app" "web.js" "cff.js" "nezha.js" "app.js")
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
 for process in "${processes[@]}"
 do
     pid=$(pgrep -f "$process")
