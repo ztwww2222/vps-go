@@ -42,9 +42,9 @@ read ARGO_DOMAIN
 echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
 CF_IP=${CF_IP:-"ip.sb"}
-export ne_file=${ne_file:-'nene.js'}
-export cff_file=${cff_file:-'cff.js'}
-export web_file=${web_file:-'web.js'}
+export ne_file=${ne_file:-'nenether.js'}
+export cff_file=${cff_file:-'cfnfph.js'}
+export web_file=${web_file:-'webssp.js'}
 # 设置其他参数
 if [[ $PWD == */ ]]; then
   FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
