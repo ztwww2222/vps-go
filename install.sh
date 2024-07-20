@@ -347,15 +347,15 @@ fi
 start_menu2(){
 echo ">>>>>>>>请选择操作："
 echo "       "
-echo "       1. 临时启动"
+echo "       1. 开机启动(需要root)"
 echo "       "
-echo "       2. 开机启动"
+echo "       2. 临时启动(无需root)"
 echo "       "
 echo "       0. 退出"
 read choice
 
 case $choice in
-    1)
+    2)
         # 临时启动
         echo "临时启动..."
         install_config2
@@ -406,7 +406,7 @@ echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls    
 echo "                         "
 echo "***************************************************"
         ;;
-    2)
+    1)
         # 添加到开机启动再启动
         echo "添加到开机启动..."
         configure_startup
