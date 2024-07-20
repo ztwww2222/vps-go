@@ -2,23 +2,6 @@
 echo " =================vps一键脚本隧道版========================"
 echo "                      "
 echo "                      "
-
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
-if [ ! -d "${FLIE_PATH}" ]; then
-  if mkdir -p -m 755 "${FLIE_PATH}"; then
-    echo ""
-  else 
-    FLIE_PATH="/tmp/"
-  fi
-fi
-export ne_file=${ne_file:-'nenether.js'}
-export cff_file=${cff_file:-'cfnfph.js'}
-export web_file=${web_file:-'webssp.js'}
-
 install_naray(){
 
 install_config(){
@@ -26,7 +9,6 @@ install_config(){
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}  
-
 
 # 提示用户输入变量值，如果没有输入则使用默认值
 if [ "${TMP_ARGO}" == "rel" ]; then 
@@ -66,7 +48,12 @@ fi
 export ne_file=${ne_file:-'nenether.js'}
 export cff_file=${cff_file:-'cfnfph.js'}
 export web_file=${web_file:-'webssp.js'}
-
+# 设置其他参数
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
 }
 
 install_config2(){
@@ -76,7 +63,7 @@ do
     pid=$(pgrep -f "$process")
 
     if [ -n "$pid" ]; then
-        kill "$pid"
+        kill "$pid" &>/dev/null
     fi
 done
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel):"
@@ -87,7 +74,7 @@ export TMP_ARGO=${TMP_ARGO:-'rel'}
 if [ "${TMP_ARGO}" == "rel" ]; then 
 echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
 read SERVER_PORT
-SERVER_PO=${SERVER_PORT:-"443"}
+SERVER_POT=${SERVER_PORT:-"443"}
 fi
 echo -n "请输入 节点名称（默认值：vps）: "
 read SUB_NAME
@@ -116,14 +103,23 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 fi
 # 设置其他参数
-
+FLIE_PATH="${FLIE_PATH:-/tmp/worlds/}"
 CF_IP=${CF_IP:-"ip.sb"}
+export ne_file=${ne_file:-'nenether.js'}
+export cff_file=${cff_file:-'cfnfph.js'}
+export web_file=${web_file:-'webssp.js'}
 
 }
 
 # 创建 start.sh 脚本并写入你的代码
 install_start(){
-
+if [ ! -d "${FLIE_PATH}" ]; then
+  if mkdir -p -m 755 "${FLIE_PATH}"; then
+    echo ""
+  else 
+    echo "权限不足，无法创建文件"
+  fi
+fi
   cat <<EOL > ${FLIE_PATH}start.sh
 #!/bin/bash
 ## ===========================================设置各参数（不需要的可以删掉或者前面加# ）=============================================
@@ -209,8 +205,8 @@ check_and_install_dependencies() {
                     apt-get install -y "$dep"
                     ;;
                 *)
-                    echo "不支持的 Linux 发行版：$linux_dist,尝试启动"
-                    
+                    echo "不支持的 Linux 发行版：$linux_dist"
+                    return 1
                     ;;
             esac
             echo "$dep 命令已安装。"
@@ -226,29 +222,7 @@ check_and_install_dependencies() {
 configure_startup() {
     # 检查并安装依赖软件
     check_and_install_dependencies
-    if [ -s "${FLIE_PATH}start.sh" ]; then
-        echo "检测到已存在的启动脚本，将先卸载旧版本..."
-        processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
- # Define the list of process names to be checked
-processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
-
-# Iterate over each process name in the list
-for process in "${processes[@]}"
-do
-  pid=$(pgrep -f "$process" 2>/dev/null)
-
-  if [ -n "$pid" ]; then
-    kill "$pid" &>/dev/null
-  fi
-done
-
-     fi
-    if [ -s "${FLIE_PATH}list.log" ]; then
-        rm "${FLIE_PATH}list.log"
-    fi
-    if [ -s "/tmp/list.log" ]; then
-        rm "/tmp/list.log"
-    fi
+    rm_naray
     install_config
     install_start
 # 根据不同的 Linux 发行版采用不同的开机启动方案
@@ -294,8 +268,8 @@ EOL
         ;;
 
     *)
-        echo "不支持的 Linux 发行版：$linux_dist,尝试启动"
-        
+        echo "不支持的 Linux 发行版：$linux_dist"
+        exit 1
         ;;
 esac
 
@@ -465,7 +439,7 @@ do
     pid=$(pgrep -f "$process")
 
     if [ -n "$pid" ]; then
-        kill "$pid"
+        kill "$pid" &>/dev/null
     fi
 done
 
@@ -508,6 +482,11 @@ systemctl daemon-reload
 echo "Systemd reloaded."
 
 echo "Service removal completed."
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
 if [ -d "${FLIE_PATH}" ]; then
 rm -rf ${FLIE_PATH}
 fi
@@ -515,19 +494,15 @@ if [ -d "/tmp/worlds/" ]; then
 rm -rf /tmp/worlds/
 fi
 
-# Define the list of process names to be checked
 processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
-
-# Iterate over each process name in the list
 for process in "${processes[@]}"
 do
-  pid=$(pgrep -f "$process" 2>/dev/null)
+    pid=$(pgrep -f "$process")
 
-  if [ -n "$pid" ]; then
-    kill "$pid" &>/dev/null
-  fi
+    if [ -n "$pid" ]; then
+        kill "$pid"
+    fi
 done
-
 
 }
 start_menu1(){
