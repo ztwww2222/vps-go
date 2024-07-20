@@ -35,10 +35,10 @@ echo -n "请输入 NEZHA_PORT（默认值：443）: "
 read NEZHA_PORT
 NEZHA_PORT=${NEZHA_PORT:-"443"}
 
-echo -n "是否开启哪吒的tls（默认开启,需要关闭设置0）: "
+echo -n "是否开启哪吒的tls（1开启,0关闭,默认开启）: "
 read NEZHA_TLS
 NEZHA_TLS=${NEZHA_TLS:-"1"}
-
+if [ "${TMP_ARGO}" != "rel" ]; then
 # 设置固定隧道参数
 echo -n "请输入固定隧道token或者json(不填则使用临时隧道) : "
 read TOK
@@ -47,6 +47,7 @@ read ARGO_DOMAIN
 echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
 CF_IP=${CF_IP:-"ip.sb"}
+fi
 export ne_file=${ne_file:-'nenether.js'}
 export cff_file=${cff_file:-'cfnfph.js'}
 export web_file=${web_file:-'webssp.js'}
