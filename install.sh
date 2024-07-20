@@ -59,7 +59,6 @@ echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
 CF_IP=${CF_IP:-"ip.sb"}
 fi
-
 }
 
 install_config2(){
@@ -170,7 +169,9 @@ EOL
 
 # 赋予 start.sh 执行权限
 chmod +x ${FLIE_PATH}start.sh
+
 }
+
 # 函数：检查并安装依赖软件
 check_and_install_dependencies() {
     # 依赖软件列表
@@ -275,7 +276,7 @@ EOL
 
     *)
         echo "不支持的 Linux 发行版：$linux_dist"
-        exit 1
+        
         ;;
 esac
 
