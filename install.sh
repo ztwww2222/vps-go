@@ -2,24 +2,7 @@
 echo " =================vps一键脚本隧道版========================"
 echo "                      "
 echo "                      "
-export ne_file=${ne_file:-'nenether.js'}
-export cff_file=${cff_file:-'cfnfph.js'}
-export web_file=${web_file:-'webssp.js'}
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
-if [ ! -d "${FLIE_PATH}" ]; then
-  if mkdir -p -m 755 "${FLIE_PATH}"; then
-    echo ""
-  else 
-    FLIE_PATH="/tmp/"
-  fi
-fi
-
 install_naray(){
-
 
 install_config(){
 
@@ -32,6 +15,7 @@ if [ "${TMP_ARGO}" == "rel" ]; then
 echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
 read SERVER_PORT
 SERVER_POT=${SERVER_PORT:-"443"}
+fi
 
 echo -n "请输入 节点名称（默认值：vps）: "
 read SUB_NAME
@@ -60,6 +44,15 @@ read ARGO_DOMAIN
 echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
 CF_IP=${CF_IP:-"ip.sb"}
+fi
+export ne_file=${ne_file:-'nenether.js'}
+export cff_file=${cff_file:-'cfnfph.js'}
+export web_file=${web_file:-'webssp.js'}
+# 设置其他参数
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
 fi
 }
 
@@ -109,14 +102,23 @@ read TOK
 echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
 read ARGO_DOMAIN
 fi
-
+# 设置其他参数
+FLIE_PATH="${FLIE_PATH:-/tmp/worlds/}"
 CF_IP=${CF_IP:-"ip.sb"}
-
+export ne_file=${ne_file:-'nene.js'}
+export cff_file=${cff_file:-'cff.js'}
+export web_file=${web_file:-'web.js'}
 }
 
 # 创建 start.sh 脚本并写入你的代码
 install_start(){
-
+if [ ! -d "${FLIE_PATH}" ]; then
+  if mkdir -p -m 755 "${FLIE_PATH}"; then
+    echo ""
+  else 
+    echo "权限不足，无法创建文件"
+  fi
+fi
   cat <<EOL > ${FLIE_PATH}start.sh
 #!/bin/bash
 ## ===========================================设置各参数（不需要的可以删掉或者前面加# ）=============================================
@@ -171,9 +173,7 @@ EOL
 
 # 赋予 start.sh 执行权限
 chmod +x ${FLIE_PATH}start.sh
-
 }
-
 # 函数：检查并安装依赖软件
 check_and_install_dependencies() {
     # 依赖软件列表
@@ -205,7 +205,7 @@ check_and_install_dependencies() {
                     ;;
                 *)
                     echo "不支持的 Linux 发行版：$linux_dist"
-                    return 1
+                    
                     ;;
             esac
             echo "$dep 命令已安装。"
@@ -221,17 +221,7 @@ check_and_install_dependencies() {
 configure_startup() {
     # 检查并安装依赖软件
     check_and_install_dependencies
-    if [ -s "$FILE_PATH/start.sh" ]; then
     rm_naray
-    fi
-    if [ -s "${FLIE_PATH}list.log" ]; then
-    rm "${FLIE_PATH}list.log"
-    fi
-
-  # Check if /tmp/list.log exists and delete it
-    if [ -s "/tmp/list.log" ]; then
-    rm "/tmp/list.log"
-    fi  
     install_config
     install_start
 # 根据不同的 Linux 发行版采用不同的开机启动方案
@@ -401,7 +391,6 @@ else
 fi
 echo "                         "
 echo "***************************************************"
-
         ;;
     1)
         # 添加到开机启动再启动
@@ -448,7 +437,7 @@ do
     pid=$(pgrep -f "$process")
 
     if [ -n "$pid" ]; then
-        kill "$pid" &>/dev/null
+        kill "$pid"  &>/dev/null
     fi
 done
 
@@ -509,7 +498,7 @@ do
     pid=$(pgrep -f "$process")
 
     if [ -n "$pid" ]; then
-        kill "$pid" &>/dev/null
+        kill "$pid"  &>/dev/null
     fi
 done
 
