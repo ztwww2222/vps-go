@@ -177,6 +177,15 @@ configure_startup() {
         print_warning "检测到已存在的启动脚本，将先卸载旧版本..."
         rm_naray
     fi
+        # 删除可能存在的旧的 list.log 文件
+    if [ -f "${FLIE_PATH}list.log" ]; then
+        print_info "删除旧的 ${FLIE_PATH}list.log 文件"
+        rm "${FLIE_PATH}list.log"
+    fi
+    if [ -f "/tmp/list.log" ]; then
+        print_info "删除旧的 /tmp/list.log 文件"
+        rm "/tmp/list.log"
+    fi
     install_config
     install_start
     
