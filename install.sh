@@ -9,8 +9,7 @@ install_config(){
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}  
-UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
-VPATH='vls-flvlkc'
+
 
 # 提示用户输入变量值，如果没有输入则使用默认值
 if [ "${TMP_ARGO}" == "rel" ]; then 
@@ -71,8 +70,7 @@ done
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel):"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}
-UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
-VPATH='vls'
+
 
 if [ "${TMP_ARGO}" == "rel" ]; then 
 echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
@@ -148,8 +146,7 @@ export CF_IP='$CF_IP'
 export SUB_NAME='$SUB_NAME'
 export SERVER_IP='$SERVER_IP'
 ## ===========================================设置x-ra-y下载地址（建议直接使用默认）===============================
-export UUID='$UUID'
-export VPATH='$VPATH'
+
 export SUB_URL='$SUB_URL'
 ## ===================================
 export ne_file='$ne_file'
@@ -208,8 +205,8 @@ check_and_install_dependencies() {
                     apt-get install -y "$dep"
                     ;;
                 *)
-                    echo "不支持的 Linux 发行版：$linux_dist"
-                    return 1
+                    echo "不支持的 Linux 发行版：$linux_dist,尝试启动"
+                    
                     ;;
             esac
             echo "$dep 命令已安装。"
@@ -225,7 +222,18 @@ check_and_install_dependencies() {
 configure_startup() {
     # 检查并安装依赖软件
     check_and_install_dependencies
-    rm_naray
+    if [ -s "${FLIE_PATH}start.sh" ]; then
+        echo "检测到已存在的启动脚本，将先卸载旧版本..."
+        rm_naray
+    fi
+   if [ -s "${FLIE_PATH}list.log" ]; then
+        print_info "删除旧的 ${FLIE_PATH}list.log 文件"
+        rm "${FLIE_PATH}list.log"
+    fi
+    if [ -s "/tmp/list.log" ]; then
+        print_info "删除旧的 /tmp/list.log 文件"
+        rm "/tmp/list.log"
+    fi
     install_config
     install_start
 # 根据不同的 Linux 发行版采用不同的开机启动方案
@@ -271,8 +279,8 @@ EOL
         ;;
 
     *)
-        echo "不支持的 Linux 发行版：$linux_dist"
-        exit 1
+        echo "不支持的 Linux 发行版：$linux_dist,尝试启动"
+        
         ;;
 esac
 
@@ -318,7 +326,7 @@ fi
 echo "                         "
 echo "***************************************************"
 echo "                         "
-echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
+echo "       "
 echo "                         "
 echo "***************************************************"
 }
@@ -399,7 +407,7 @@ fi
 echo "                         "
 echo "***************************************************"
 echo "                         "
-echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
+echo "          "
 echo "                         "
 echo "***************************************************"
         ;;
