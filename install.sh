@@ -233,11 +233,10 @@ processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
 # Iterate over each process name in the list
 for process in "${processes[@]}"
 do
-  pid=$(pgrep -f "$process")
+  pid=$(pgrep -f "$process" 2>/dev/null)
 
   if [ -n "$pid" ]; then
-    echo "Killing process $process with PID(s): $pid"
-    kill "$pid"
+    kill "$pid" &>/dev/null
   fi
 done
 
@@ -520,11 +519,10 @@ processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
 # Iterate over each process name in the list
 for process in "${processes[@]}"
 do
-  pid=$(pgrep -f "$process")
+  pid=$(pgrep -f "$process" 2>/dev/null)
 
   if [ -n "$pid" ]; then
-    echo "Killing process $process with PID(s): $pid"
-    kill "$pid"
+    kill "$pid" &>/dev/null
   fi
 done
 
