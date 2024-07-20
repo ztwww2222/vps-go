@@ -237,11 +237,9 @@ configure_startup() {
         done
      fi
     if [ -s "${FLIE_PATH}list.log" ]; then
-        print_info "删除旧的 ${FLIE_PATH}list.log 文件"
         rm "${FLIE_PATH}list.log"
     fi
     if [ -s "/tmp/list.log" ]; then
-        print_info "删除旧的 /tmp/list.log 文件"
         rm "/tmp/list.log"
     fi
     install_config
