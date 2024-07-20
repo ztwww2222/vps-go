@@ -172,7 +172,11 @@ configure_startup() {
     print_info "正在配置开机启动..."
     
     check_and_install_dependencies || return 1
-    rm_naray
+    # 检查是否存在旧的启动脚本
+    if [ -f "${FLIE_PATH}start.sh" ]; then
+        print_warning "检测到已存在的启动脚本，将先卸载旧版本..."
+        rm_naray
+    fi
     install_config
     install_start
     
@@ -233,7 +237,7 @@ EOL
         sed 's/{PASS}/vless/g' /tmp/list.log | cat
     fi
 
-    print_info "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls"
+    
 }
 
 install_bbr() {
