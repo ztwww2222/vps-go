@@ -226,9 +226,17 @@ configure_startup() {
     check_and_install_dependencies
     if [ -s "${FLIE_PATH}start.sh" ]; then
         echo "检测到已存在的启动脚本，将先卸载旧版本..."
-        rm_naray
-    fi
-   if [ -s "${FLIE_PATH}list.log" ]; then
+        processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+        for process in "${processes[@]}"
+        do
+          pid=$(pgrep -f "$process")
+
+        if [ -n "$pid" ]; then
+         kill "$pid"
+         fi
+        done
+     fi
+    if [ -s "${FLIE_PATH}list.log" ]; then
         print_info "删除旧的 ${FLIE_PATH}list.log 文件"
         rm "${FLIE_PATH}list.log"
     fi
@@ -495,11 +503,6 @@ systemctl daemon-reload
 echo "Systemd reloaded."
 
 echo "Service removal completed."
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
 if [ -d "${FLIE_PATH}" ]; then
 rm -rf ${FLIE_PATH}
 fi
