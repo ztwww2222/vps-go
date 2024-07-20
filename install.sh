@@ -128,6 +128,12 @@ export NEZHA_KEY='$NEZHA_KEY'
 export NEZHA_PORT='$NEZHA_PORT'
 export NEZHA_TLS='$NEZHA_TLS' 
 
+
+# 设置节点协议及reality参数(vls,vms,rel)
+export TMP_ARGO=${TMP_ARGO:-'vls'}  #设置节点使用的协议
+export SERVER_PORT="${SERVER_PORT:-${PORT:-443}}" #ip地址不能被墙，端口不能被占，所以不能同时开游戏
+export SNI=${SNI:-'www.apple.com'} # tls网站
+
 # 设置app参数（默认x-ra-y参数，如果你更改了下载地址，需要修改UUID和VPATH）
 export FLIE_PATH='$FLIE_PATH'
 export CF_IP='$CF_IP'
