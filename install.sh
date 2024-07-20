@@ -2,7 +2,6 @@
 echo " =================vps一键脚本隧道版========================"
 echo "                      "
 echo "                      "
-install_naray(){
 export ne_file=${ne_file:-'nenether.js'}
 export cff_file=${cff_file:-'cfnfph.js'}
 export web_file=${web_file:-'webssp.js'}
@@ -18,6 +17,9 @@ if [ ! -d "${FLIE_PATH}" ]; then
     FLIE_PATH="/tmp/"
   fi
 fi
+
+install_naray(){
+
 
 install_config(){
 
