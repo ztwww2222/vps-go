@@ -18,6 +18,7 @@ if [ ! -d "${FLIE_PATH}" ]; then
     FLIE_PATH="/tmp/"
   fi
 fi
+
 install_config(){
 
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):"
@@ -58,7 +59,6 @@ echo -n "请输入CF优选IP(默认ip.sb) : "
 read CF_IP
 CF_IP=${CF_IP:-"ip.sb"}
 fi
-
 
 }
 
@@ -108,7 +108,6 @@ read TOK
 echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
 read ARGO_DOMAIN
 fi
-# 设置其他参数
 
 CF_IP=${CF_IP:-"ip.sb"}
 
