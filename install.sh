@@ -6,8 +6,9 @@ install_naray(){
 
 install_config(){
 
-echo -n "请输入 UUID（默认值：fd80f56e-93f3-4c85-b2a8-c77216c509a7）: "
-read UUID
+echo -n "请输入节点使用的协议，可选vls,vms,rel,默认rel"
+read TMP_ARGO
+export TMP_ARGO=${TMP_ARGO:-'rel'}  
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
 VPATH='vls'
 
