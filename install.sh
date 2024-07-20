@@ -1,151 +1,163 @@
 #!/bin/bash
+echo " =================vps一键脚本隧道版========================"
+echo "                      "
+echo "                      "
+install_naray(){
 
-# 定义颜色
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-PLAIN='\033[0m'
+install_config(){
 
-# 输出带颜色的信息
-print_info() {
-    echo -e "${BLUE}[INFO]${PLAIN} $1"
+echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):"
+read TMP_ARGO
+export TMP_ARGO=${TMP_ARGO:-'rel'}  
+UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
+VPATH='vls-flvlkc'
+
+# 提示用户输入变量值，如果没有输入则使用默认值
+if [ "${TMP_ARGO}" == "rel" ]; then 
+echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
+read SERVER_PORT
+SERVER_PO=${SERVER_PORT:-"443"}
+fi
+
+echo -n "请输入 节点名称（默认值：vps）: "
+read SUB_NAME
+SUB_NAME=${SUB_NAME:-"vps"}
+
+echo -n "请输入 NEZHA_SERVER（不需要就不填）: "
+read NEZHA_SERVER
+
+echo -n "请输入 NEZHA_KEY (不需要就不填): "
+read NEZHA_KEY
+
+
+echo -n "请输入 NEZHA_PORT（默认值：443）: "
+read NEZHA_PORT
+NEZHA_PORT=${NEZHA_PORT:-"443"}
+
+echo -n "是否开启哪吒的tls（1开启,0关闭,默认开启）: "
+read NEZHA_TLS
+NEZHA_TLS=${NEZHA_TLS:-"1"}
+if [ "${TMP_ARGO}" != "rel" ]; then
+# 设置固定隧道参数
+echo -n "请输入固定隧道token或者json(不填则使用临时隧道) : "
+read TOK
+echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
+read ARGO_DOMAIN
+echo -n "请输入CF优选IP(默认ip.sb) : "
+read CF_IP
+CF_IP=${CF_IP:-"ip.sb"}
+fi
+export ne_file=${ne_file:-'nenether.js'}
+export cff_file=${cff_file:-'cfnfph.js'}
+export web_file=${web_file:-'webssp.js'}
+# 设置其他参数
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
 }
 
-print_success() {
-    echo -e "${GREEN}[SUCCESS]${PLAIN} $1"
-}
+install_config2(){
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+for process in "${processes[@]}"
+do
+    pid=$(pgrep -f "$process")
 
-print_error() {
-    echo -e "${RED}[ERROR]${PLAIN} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${PLAIN} $1"
-}
-
-# 检查并安装依赖
-check_and_install_dependencies() {
-    dependencies=("curl" "pgrep" "wget" "systemctl")
-    
-    print_info "正在检查依赖..."
-    
-    for dep in "${dependencies[@]}"; do
-        if command -v "$dep" &>/dev/null; then
-            print_success "$dep 已安装"
-        else
-            print_warning "$dep 未安装，正在尝试安装..."
-            case "$linux_dist" in
-                "Alpine Linux")
-                    apk update && apk add "$dep"
-                    ;;
-                "Ubuntu" | "Debian" | "Kali Linux")
-                    apt-get update && apt-get install -y "$dep"
-                    ;;
-                "CentOS")
-                    yum install -y "$dep"
-                    ;;
-                *)
-                    print_error "不支持的 Linux 发行版：$linux_dist，程序将尝试启动"
-                    
-                    ;;
-            esac
-            
-            if command -v "$dep" &>/dev/null; then
-                print_success "$dep 安装成功"
-            else
-                print_error "$dep 安装失败，尝试启动"
-                
-            fi
-        fi
-    done
-    
-    print_success "所有依赖已安装"
-    return 0
-}
-
-install_config() {
-    print_info "正在配置节点..."
-
-    read -p "请输入节点使用的协议 (可选vls,vms,rel,默认rel): " TMP_ARGO
-    TMP_ARGO=${TMP_ARGO:-'rel'}
-    UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
-    VPATH='vls-flvlkc'
-
-    if [ "${TMP_ARGO}" == "rel" ]; then 
-        read -p "请输入节点端口 (默认443): " SERVER_PORT
-        SERVER_PO=${SERVER_PORT:-"443"}
+    if [ -n "$pid" ]; then
+        kill "$pid"
     fi
+done
+echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel):"
+read TMP_ARGO
+export TMP_ARGO=${TMP_ARGO:-'rel'}
+UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
+VPATH='vls'
 
-    read -p "请输入节点名称 (默认值：vps): " SUB_NAME
-    SUB_NAME=${SUB_NAME:-"vps"}
+if [ "${TMP_ARGO}" == "rel" ]; then 
+echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
+read SERVER_PORT
+SERVER_PO=${SERVER_PORT:-"443"}
+fi
+echo -n "请输入 节点名称（默认值：vps）: "
+read SUB_NAME
+SUB_NAME=${SUB_NAME:-"vps"}
 
-    read -p "请输入 NEZHA_SERVER (不需要就不填): " NEZHA_SERVER
-    read -p "请输入 NEZHA_KEY (不需要就不填): " NEZHA_KEY
-    read -p "请输入 NEZHA_PORT (默认值：443): " NEZHA_PORT
-    NEZHA_PORT=${NEZHA_PORT:-"443"}
+echo -n "请输入 NEZHA_SERVER（不需要就不填）: "
+read NEZHA_SERVER
 
-    read -p "是否开启哪吒的tls (1开启,0关闭,默认开启): " NEZHA_TLS
-    NEZHA_TLS=${NEZHA_TLS:-"1"}
 
-    if [ "${TMP_ARGO}" != "rel" ]; then
-        read -p "请输入固定隧道token或者json (不填则使用临时隧道): " TOK
-        read -p "请输入隧道域名 (设置固定隧道后填写，临时隧道不需要): " ARGO_DOMAIN
-        read -p "请输入CF优选IP (默认ip.sb): " CF_IP
-        CF_IP=${CF_IP:-"ip.sb"}
-    fi
+echo -n "请输入 NEZHA_KEY (不需要就不填): "
+read NEZHA_KEY
 
-    export ne_file=${ne_file:-'nenether.js'}
-    export cff_file=${cff_file:-'cfnfph.js'}
-    export web_file=${web_file:-'webssp.js'}
 
-    if [[ $PWD == */ ]]; then
-        FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-    else
-        FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-    fi
+echo -n "请输入 NEZHA_PORT（默认值：443）: "
+read NEZHA_PORT
+NEZHA_PORT=${NEZHA_PORT:-"443"}
 
-    print_success "配置完成"
+echo -n "是否开启哪吒的tls（默认开启,需要关闭设置0）: "
+read NEZHA_TLS
+NEZHA_TLS=${NEZHA_TLS:-"1"}
+if [ "${TMP_ARGO}" != "rel" ]; then
+# 设置固定隧道参数
+echo -n "请输入固定隧道token或者json(不填则使用临时隧道) : "
+read TOK
+echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
+read ARGO_DOMAIN
+fi
+# 设置其他参数
+FLIE_PATH="${FLIE_PATH:-/tmp/worlds/}"
+CF_IP=${CF_IP:-"ip.sb"}
+export ne_file=${ne_file:-'nene.js'}
+export cff_file=${cff_file:-'cff.js'}
+export web_file=${web_file:-'web.js'}
 }
 
-install_start() {
-    print_info "正在创建启动脚本..."
-
-    if [ ! -d "${FLIE_PATH}" ]; then
-        if mkdir -p -m 755 "${FLIE_PATH}"; then
-            print_success "创建目录成功"
-        else 
-            print_error "权限不足，无法创建文件"
-            return 1
-        fi
-    fi
-
-    cat <<EOL > ${FLIE_PATH}start.sh
+# 创建 start.sh 脚本并写入你的代码
+install_start(){
+if [ ! -d "${FLIE_PATH}" ]; then
+  if mkdir -p -m 755 "${FLIE_PATH}"; then
+    echo ""
+  else 
+    echo "权限不足，无法创建文件"
+  fi
+fi
+  cat <<EOL > ${FLIE_PATH}start.sh
 #!/bin/bash
+## ===========================================设置各参数（不需要的可以删掉或者前面加# ）=============================================
+
+# 设置ARGO参数 (不设置默认使用临时隧道，如果设置把前面的#去掉)
 export TOK='$TOK'
 export ARGO_DOMAIN='$ARGO_DOMAIN'
+
+# 设置哪吒参数(NEZHA_TLS='1'开启tls,设置其他关闭tls)
 export NEZHA_SERVER='$NEZHA_SERVER'
 export NEZHA_KEY='$NEZHA_KEY'
 export NEZHA_PORT='$NEZHA_PORT'
 export NEZHA_TLS='$NEZHA_TLS' 
-export TMP_ARGO=${TMP_ARGO:-'vls'}
-export SERVER_PORT="${SERVER_PORT:-${PORT:-443}}"
-export SNI=${SNI:-'www.apple.com'}
+
+
+# 设置节点协议及reality参数(vls,vms,rel)
+export TMP_ARGO=${TMP_ARGO:-'vls'}  #设置节点使用的协议
+export SERVER_PORT="${SERVER_PORT:-${PORT:-443}}" #ip地址不能被墙，端口不能被占，所以不能同时开游戏
+export SNI=${SNI:-'www.apple.com'} # tls网站
+
+# 设置app参数（默认x-ra-y参数，如果你更改了下载地址，需要修改UUID和VPATH）
 export FLIE_PATH='$FLIE_PATH'
 export CF_IP='$CF_IP'
 export SUB_NAME='$SUB_NAME'
 export SERVER_IP='$SERVER_IP'
+## ===========================================设置x-ra-y下载地址（建议直接使用默认）===============================
 export UUID='$UUID'
 export VPATH='$VPATH'
 export SUB_URL='$SUB_URL'
+## ===================================
 export ne_file='$ne_file'
 export cff_file='$cff_file'
 export web_file='$web_file'
-
 if command -v curl &>/dev/null; then
     DOWNLOAD_CMD="curl -sL"
+# Check if wget is available
 elif command -v wget &>/dev/null; then
     DOWNLOAD_CMD="wget -qO-"
 else
@@ -153,7 +165,6 @@ else
     sleep 30
     exit 1
 fi
-
 arch=\$(uname -m)
 if [[ \$arch == "x86_64" ]]; then
     \$DOWNLOAD_CMD https://github.com/dsadsadsss/plutonodes/releases/download/xr/main-amd > /tmp/app
@@ -164,205 +175,378 @@ fi
 chmod 777 /tmp/app && /tmp/app
 EOL
 
-    chmod +x ${FLIE_PATH}start.sh
-    print_success "启动脚本创建完成"
+# 赋予 start.sh 执行权限
+chmod +x ${FLIE_PATH}start.sh
+}
+# 函数：检查并安装依赖软件
+check_and_install_dependencies() {
+    # 依赖软件列表
+    dependencies=("curl" "pgrep" "wget" "systemctl" "libcurl4")
+
+    # 检查并安装依赖软件
+    for dep in "${dependencies[@]}"; do
+        if ! command -v "$dep" &>/dev/null; then
+            echo "$dep 命令未安装，将尝试安装..."
+            case "$linux_dist" in
+                "Alpine Linux")
+                    # 在 Alpine Linux 上安装软件包
+                    apk update
+                    apk add "$dep"
+                    ;;
+                "Ubuntu" | "Debian")
+                    # 在 Ubuntu 和 Debian 上安装软件包
+                    apt-get update
+                    apt-get install -y "$dep"
+                    ;;
+                "CentOS")
+                    # 在 CentOS 上安装软件包
+                    yum install -y "$dep"
+                    ;;
+                "Kali Linux")
+                    # 在 Kali Linux 上安装软件包
+                    apt-get update
+                    apt-get install -y "$dep"
+                    ;;
+                *)
+                    echo "不支持的 Linux 发行版：$linux_dist"
+                    return 1
+                    ;;
+            esac
+            echo "$dep 命令已安装。"
+        fi
+    done
+
+    echo "所有依赖已经安装"
+    return 0
 }
 
+
+# 函数：配置开机启动
 configure_startup() {
-    print_info "正在配置开机启动..."
-    
-    check_and_install_dependencies || return 1
-    # 检查是否存在旧的启动脚本
-    if [ -s "${FLIE_PATH}start.sh" ]; then
-        print_warning "检测到已存在的启动脚本，将先卸载旧版本..."
-        rm_naray
-    fi
-        # 删除可能存在的旧的 list.log 文件
-    if [ -s "${FLIE_PATH}list.log" ]; then
-        print_info "删除旧的 ${FLIE_PATH}list.log 文件"
-        rm "${FLIE_PATH}list.log"
-    fi
-    if [ -s "/tmp/list.log" ]; then
-        print_info "删除旧的 /tmp/list.log 文件"
-        rm "/tmp/list.log"
-    fi
+    # 检查并安装依赖软件
+    check_and_install_dependencies
+    rm_naray
     install_config
     install_start
-    
-    case "$linux_dist" in
-        "Alpine Linux" | "Kali Linux")
-            nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
-            echo "${FLIE_PATH}start.sh" | tee -a /etc/rc.local > /dev/null
-            chmod +x /etc/rc.local
-            ;;
-        "Ubuntu" | "Debian" | "CentOS")
-            cat <<EOL > my_script.service
-[Unit]
-Description=My Startup Script
+# 根据不同的 Linux 发行版采用不同的开机启动方案
+case "$linux_dist" in
+    "Alpine Linux")
+        # 对于 Alpine Linux：
+        # 添加开机启动脚本到 rc.local
+        nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
+        echo "${FLIE_PATH}start.sh" |  tee -a /etc/rc.local > /dev/null
+        chmod +x /etc/rc.local
+        ;;
 
-[Service]
-ExecStart=${FLIE_PATH}start.sh
-Restart=always
-User=$(whoami)
+    "Ubuntu" | "Debian" | "CentOS")
+        # 对于 Ubuntu、Debian 和 CentOS：
+        # 创建一个 .service 文件并添加启动配置
+        cat <<EOL > my_script.service
+        [Unit]
+        Description=My Startup Script
 
-[Install]
-WantedBy=multi-user.target
+        [Service]
+        ExecStart=${FLIE_PATH}start.sh
+        Restart=always
+        User=$(whoami)
+
+        [Install]
+        WantedBy=multi-user.target
 EOL
-            cp my_script.service /etc/systemd/system/
-            systemctl enable my_script.service
-            systemctl start my_script.service
-            ;;
-        *)
-            print_error "不支持的 Linux 发行版：$linux_dist"
-            return 1
-            ;;
-    esac
-    
-    print_success "开机启动配置完成"
-    
-    print_info "等待脚本启动..."
-    sleep 15
-    keyword="$web_file"
-    max_attempts=5
-    counter=0
 
-    while [ $counter -lt $max_attempts ]; do
-        if command -v pgrep > /dev/null && pgrep -f "$keyword" > /dev/null && [ -s /tmp/list.log ]; then
-            print_success "脚本启动成功"
-            break
-        elif ps aux | grep "$keyword" | grep -v grep > /dev/null && [ -s /tmp/list.log ]; then
-            print_success "脚本启动成功"
-            break
-        else
-            sleep 10
-            ((counter++))
-        fi
-    done
+        # 复制 .service 文件到 /etc/systemd/system/
+        cp my_script.service /etc/systemd/system/
 
-    print_info "节点信息："
-    if [ -s "${FLIE_PATH}list.log" ]; then
-        sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
-    elif [ -s "/tmp/list.log" ]; then
-        sed 's/{PASS}/vless/g' /tmp/list.log | cat
-    fi
+        # 启用服务并启动它
+        systemctl enable my_script.service
+        systemctl start my_script.service
+        ;;
 
+    "Kali Linux")
+        # 对于 Kali Linux：
+        # 添加开机启动脚本到 rc.local
+        nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
+        echo "${FLIE_PATH}start.sh" |  tee -a /etc/rc.local > /dev/null
+        chmod +x /etc/rc.local
+        ;;
+
+    *)
+        echo "不支持的 Linux 发行版：$linux_dist"
+        exit 1
+        ;;
+esac
+
+
+echo "等待脚本启动...如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断或重启尝试"
+sleep 15
+keyword="$web_file"
+max_attempts=5
+counter=0
+
+while [ $counter -lt $max_attempts ]; do
+  # 使用pgrep检查包含关键词的进程是否存在
+ if command -v pgrep > /dev/null && pgrep -f "$keyword" > /dev/null && [ -s /tmp/list.log ]; then
+
+    echo "***************************************************"
+    echo "                          "
+    echo "脚本启动成功"
+    echo "                          "
+    break
+  elif ps aux | grep "$keyword" | grep -v grep > /dev/null && [ -s /tmp/list.log ]; then
+    echo "***************************************************"
+    echo "                          "
+    echo "脚本启动成功"
+    echo "                          "
     
+    break
+  else
+    sleep 10
+    ((counter++))
+  fi
+done
+
+echo "                         "
+echo "**************节点信息*********************   "
+echo "                         "
+if [ -s "${FLIE_PATH}list.log" ]; then
+  sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
+else
+  if [ -s "/tmp/list.log" ]; then
+    sed 's/{PASS}/vless/g' /tmp/list.log | cat
+  fi
+fi
+echo "                         "
+echo "***************************************************"
+echo "                         "
+echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
+echo "                         "
+echo "***************************************************"
 }
 
-install_bbr() {
-    print_info "正在安装BBR加速..."
+# 获取Linux发行版名称，并赋值给$linux_dist变量
+linux_dist=$(cat /etc/os-release | grep -oP '(?<=^NAME\=).*' | tr -d '"')
 
+# 根据不同的发行版名称设置$linux_dist的值
+if [[ $linux_dist == *"Alpine"* ]]; then
+    linux_dist="Alpine Linux"
+elif [[ $linux_dist == *"Ubuntu"* ]]; then
+    linux_dist="Ubuntu"
+elif [[ $linux_dist == *"Debian"* ]]; then
+    linux_dist="Debian"
+elif [[ $linux_dist == *"CentOS"* ]]; then
+    linux_dist="CentOS"
+elif [[ $linux_dist == *"Kali"* ]]; then
+    linux_dist="Kali Linux"
+fi
+
+
+# 输出菜单，让用户选择是否直接启动或添加到开机启动再启动
+start_menu2(){
+echo ">>>>>>>>请选择操作："
+echo "       "
+echo "       1. 开机启动(需要root)"
+echo "       "
+echo "       2. 临时启动(无需root)"
+echo "       "
+echo "       0. 退出"
+read choice
+
+case $choice in
+    2)
+        # 临时启动
+        echo "临时启动..."
+        install_config2
+        install_start
+        nohup ${FLIE_PATH}start.sh 2>/dev/null 2>&1 &
+echo "等待脚本启动...，如果等待时间过长，可能是判断不准确，实际已经成功，可以通过观察哪吒自行判断"
+sleep 15
+keyword="$web_file"
+max_attempts=5
+counter=0
+
+while [ $counter -lt $max_attempts ]; do
+  # 使用pgrep检查包含关键词的进程是否存在
+ if command -v pgrep > /dev/null && pgrep -f "$keyword" > /dev/null && [ -s /tmp/list.log ]; then
+
+    echo "***************************************************"
+    echo "                          "
+    echo "脚本启动成功"
+    echo "                          "
+    break
+  elif ps aux | grep "$keyword" | grep -v grep > /dev/null && [ -s /tmp/list.log ]; then
+    echo "***************************************************"
+    echo "                          "
+    echo "脚本启动成功"
+    echo "                          "
+    
+    break
+  else
+    sleep 10
+    ((counter++))
+  fi
+done
+
+echo "                         "
+echo "**************节点信息*********************   "
+echo "                         "
+if [ -s "${FLIE_PATH}list.log" ]; then
+  sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
+else
+  if [ -s "/tmp/list.log" ]; then
+    sed 's/{PASS}/vless/g' /tmp/list.log | cat
+  fi
+fi
+echo "                         "
+echo "***************************************************"
+echo "                         "
+echo "也可手动配置节点，协议v-l-ess,ws tls,端口8002，路径vls           "
+echo "                         "
+echo "***************************************************"
+        ;;
+    1)
+        # 添加到开机启动再启动
+        echo "添加到开机启动..."
+        configure_startup
+        echo "已添加到开机启动"
+        ;;
+	  0)
+	    exit 1
+	    ;;
+  	*)
+	  clear
+	  echo -e "${Error}:请输入正确数字 [0-2]"
+	  sleep 5s
+	  start_menu2
+	  ;;
+esac
+}
+start_menu2
+}
+
+install_bbr(){
+
+    # Check if curl is available
     if command -v curl &>/dev/null; then
         bash <(curl -sL https://git.io/kernel.sh)
+    # Check if wget is available
     elif command -v wget &>/dev/null; then
-        bash <(wget -qO- https://git.io/kernel.sh)
+       bash <(wget -qO- https://git.io/kernel.sh)
     else
-        print_error "Neither curl nor wget found. Please install one of them."
+        echo "Error: Neither curl nor wget found. Please install one of them."
         sleep 30
+        
     fi
 }
+reinstall_naray(){
+if [ "$(systemctl is-active my_script.service)" == "active" ]; then
+    systemctl stop my_script.service
+    echo "Service stopped."
+fi
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+for process in "${processes[@]}"
+do
+    pid=$(pgrep -f "$process")
 
-rm_naray() {
-    print_info "正在卸载X-R-A-Y..."
-
-    service_name="my_script.service"
-
-    if [ "$(systemctl is-active $service_name)" == "active" ]; then
-        systemctl stop $service_name
-        print_success "服务已停止"
+    if [ -n "$pid" ]; then
+        kill "$pid"
     fi
+done
 
-    if [ "$(systemctl is-enabled $service_name)" == "enabled" ]; then
-        systemctl disable $service_name
-        print_success "服务已禁用"
+install_naray
+}
+rm_naray(){
+# 服务名称
+service_name="my_script.service"
+
+# 检查服务是否处于活动状态
+if [ "$(systemctl is-active $service_name)" == "active" ]; then
+    echo "Service $service_name is still active. Stopping it..."
+    systemctl stop $service_name
+    echo "Service stopped."
+fi
+
+# 检查服务是否已禁用
+if [ "$(systemctl is-enabled $service_name)" == "enabled" ]; then
+    echo "Disabling $service_name..."
+    systemctl disable $service_name
+    echo "Service $service_name disabled."
+fi
+
+# 检查并删除服务文件
+if [ -f "/etc/systemd/system/$service_name" ]; then
+    echo "Removing service file /etc/systemd/system/$service_name..."
+    rm "/etc/systemd/system/$service_name"
+    echo "Service file removed."
+elif [ -f "/lib/systemd/system/$service_name" ]; then
+    echo "Removing service file /lib/systemd/system/$service_name..."
+    rm "/lib/systemd/system/$service_name"
+    echo "Service file removed."
+else
+    echo "Service file not found in /etc/systemd/system/ or /lib/systemd/system/."
+fi
+
+# 重新加载 systemd
+echo "Reloading systemd..."
+systemctl daemon-reload
+echo "Systemd reloaded."
+
+echo "Service removal completed."
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
+if [ -d "${FLIE_PATH}" ]; then
+rm -rf ${FLIE_PATH}
+fi
+if [ -d "/tmp/worlds/" ]; then
+rm -rf /tmp/worlds/
+fi
+
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+for process in "${processes[@]}"
+do
+    pid=$(pgrep -f "$process")
+
+    if [ -n "$pid" ]; then
+        kill "$pid"
     fi
+done
 
-    if [ -f "/etc/systemd/system/$service_name" ]; then
-        rm "/etc/systemd/system/$service_name"
-        print_success "服务文件已删除"
-    elif [ -f "/lib/systemd/system/$service_name" ]; then
-        rm "/lib/systemd/system/$service_name"
-        print_success "服务文件已删除"
-    else
-        print_warning "未找到服务文件"
-    fi
-
-    systemctl daemon-reload
-    print_success "Systemd已重新加载"
-
-    if [[ $PWD == */ ]]; then
-        FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-    else
-        FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-    fi
-    
-    if [ -d "${FLIE_PATH}" ]; then
-        rm -rf ${FLIE_PATH}
-    fi
-    if [ -d "/tmp/worlds/" ]; then
-        rm -rf /tmp/worlds/
-    fi
-
-    processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
-    for process in "${processes[@]}"
-    do
-        pid=$(pgrep -f "$process")
-        if [ -n "$pid" ]; then
-            kill "$pid"
-            print_success "进程 $process 已终止"
-        fi
-    done
-
-    print_success "X-R-A-Y 卸载完成"
+}
+start_menu1(){
+echo "————————————选择菜单————————————"
+echo " "
+echo "————————————1、安装 X-R-A-Y————————————"
+echo " "
+echo "————————————2、安装 bbr加速————————————"
+echo " "
+echo "————————————3、卸载X-R-A-Y————————————"
+echo " "
+echo "————————————0、退出脚本————————————"
+echo " "
+read -p " 请输入数字 [0-3]:" numb
+case "$numb" in
+	1)
+        
+	install_naray
+	;;
+	2)
+	install_bbr
+	;;
+	3)
+	rm_naray
+	;;
+	0)
+	exit 1
+	;;
+	*)
+	clear
+	echo -e "${Error}:请输入正确数字 [0-4]"
+	sleep 5s
+	start_menu1
+	;;
+esac
 }
 
-start_menu() {
-    echo -e "${CYAN}————————————选择菜单————————————${PLAIN}"
-    echo -e "${YELLOW}1.${PLAIN} 安装 X-R-A-Y"
-    echo -e "${YELLOW}2.${PLAIN} 安装 BBR 加速"
-    echo -e "${YELLOW}3.${PLAIN} 卸载 X-R-A-Y"
-    echo -e "${YELLOW}0.${PLAIN} 退出脚本"
-    
-    read -p "请输入数字 [0-3]: " choice
-    
-    case "$choice" in
-        1) configure_startup ;;
-        2) install_bbr ;;
-        3) rm_naray ;;
-        0) exit 0 ;;
-        *) 
-            print_error "请输入正确数字 [0-3]"
-            sleep 2
-            start_menu
-            ;;
-    esac
-}
-
-get_linux_dist() {
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        if [[ $ID == "alpine" ]]; then
-            linux_dist="Alpine Linux"
-        elif [[ $ID == "ubuntu" || $ID_LIKE == *"ubuntu"* ]]; then
-            linux_dist="Ubuntu"
-        elif [[ $ID == "debian" || $ID_LIKE == *"debian"* ]]; then
-            linux_dist="Debian"
-        elif [[ $ID == "centos" || $ID == "rhel" || $ID_LIKE == *"rhel"* ]]; then
-            linux_dist="CentOS"
-        elif [[ $ID == "kali" ]]; then
-            linux_dist="Kali Linux"
-        else
-            linux_dist=$NAME
-        fi
-    else
-        linux_dist=$(uname -s)
-    fi
-    print_info "检测到的 Linux 发行版: $linux_dist"
-}
-
-main() {
-    get_linux_dist
-    start_menu
-}
-
-main
+start_menu1
