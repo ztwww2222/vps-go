@@ -222,7 +222,10 @@ check_and_install_dependencies() {
 configure_startup() {
     # 检查并安装依赖软件
     check_and_install_dependencies
+    if [ -s "$FILE_PATH/start.sh" ]; then
     rm_naray
+    fi
+    
     install_config
     install_start
 # 根据不同的 Linux 发行版采用不同的开机启动方案
@@ -500,7 +503,7 @@ do
     pid=$(pgrep -f "$process")
 
     if [ -n "$pid" ]; then
-        kill "$pid"
+        kill "$pid" &>/dev/null
     fi
 done
 
