@@ -28,7 +28,7 @@ print_warning() {
 
 # 检查并安装依赖
 check_and_install_dependencies() {
-    dependencies=("curl" "pgrep" "wget" "systemctl" "libcurl4")
+    dependencies=("curl" "pgrep" "wget" "systemctl")
     
     print_info "正在检查依赖..."
     
@@ -48,16 +48,16 @@ check_and_install_dependencies() {
                     yum install -y "$dep"
                     ;;
                 *)
-                    print_error "不支持的 Linux 发行版：$linux_dist"
-                    return 1
+                    print_error "不支持的 Linux 发行版：$linux_dist，程序将尝试启动"
+                    
                     ;;
             esac
             
             if command -v "$dep" &>/dev/null; then
                 print_success "$dep 安装成功"
             else
-                print_error "$dep 安装失败"
-                return 1
+                print_error "$dep 安装失败，尝试启动"
+                
             fi
         fi
     done
