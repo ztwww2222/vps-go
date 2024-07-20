@@ -227,14 +227,20 @@ configure_startup() {
     if [ -s "${FLIE_PATH}start.sh" ]; then
         echo "检测到已存在的启动脚本，将先卸载旧版本..."
         processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
-        for process in "${processes[@]}"
-        do
-          pid=$(pgrep -f "$process")
+ # Define the list of process names to be checked
+processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
 
-        if [ -n "$pid" ]; then
-         kill "$pid"
-         fi
-        done
+# Iterate over each process name in the list
+for process in "${processes[@]}"
+do
+  pid=$(pgrep -f "$process")
+
+  if [ -n "$pid" ]; then
+    echo "Killing process $process with PID(s): $pid"
+    kill "$pid"
+  fi
+done
+
      fi
     if [ -s "${FLIE_PATH}list.log" ]; then
         rm "${FLIE_PATH}list.log"
@@ -508,15 +514,20 @@ if [ -d "/tmp/worlds/" ]; then
 rm -rf /tmp/worlds/
 fi
 
+# Define the list of process names to be checked
 processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+
+# Iterate over each process name in the list
 for process in "${processes[@]}"
 do
-    pid=$(pgrep -f "$process")
+  pid=$(pgrep -f "$process")
 
-    if [ -n "$pid" ]; then
-        kill "$pid"
-    fi
+  if [ -n "$pid" ]; then
+    echo "Killing process $process with PID(s): $pid"
+    kill "$pid"
+  fi
 done
+
 
 }
 start_menu1(){
