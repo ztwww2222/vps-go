@@ -14,7 +14,7 @@ VPATH='vls'
 
 # 提示用户输入变量值，如果没有输入则使用默认值
 if [ "${TMP_ARGO}" == "rel" ]; then 
-echo -n "请输入节点端口(默认443):"
+echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
 read SERVER_PORT
 SERVER_PO=${SERVER_PORT:-"443"}
 fi
