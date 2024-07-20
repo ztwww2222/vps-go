@@ -328,10 +328,23 @@ start_menu() {
 get_linux_dist() {
     if [ -f /etc/os-release ]; then
         . /etc/os-release
-        linux_dist=$NAME
+        if [[ $ID == "alpine" ]]; then
+            linux_dist="Alpine Linux"
+        elif [[ $ID == "ubuntu" || $ID_LIKE == *"ubuntu"* ]]; then
+            linux_dist="Ubuntu"
+        elif [[ $ID == "debian" || $ID_LIKE == *"debian"* ]]; then
+            linux_dist="Debian"
+        elif [[ $ID == "centos" || $ID == "rhel" || $ID_LIKE == *"rhel"* ]]; then
+            linux_dist="CentOS"
+        elif [[ $ID == "kali" ]]; then
+            linux_dist="Kali Linux"
+        else
+            linux_dist=$NAME
+        fi
     else
         linux_dist=$(uname -s)
     fi
+    print_info "检测到的 Linux 发行版: $linux_dist"
 }
 
 main() {
