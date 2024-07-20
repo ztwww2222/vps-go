@@ -6,11 +6,11 @@ install_naray(){
 
 install_config(){
 
-echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel):"
+echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}  
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
-VPATH='vls'
+VPATH='vls-flvlkc'
 
 # 提示用户输入变量值，如果没有输入则使用默认值
 if [ "${TMP_ARGO}" == "rel" ]; then 
