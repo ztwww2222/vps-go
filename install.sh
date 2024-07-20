@@ -69,12 +69,17 @@ do
         kill "$pid"
     fi
 done
-echo -n "请输入 UUID（默认值：fd80f56e-93f3-4c85-b2a8-c77216c509a7）: "
-read UUID
+echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel):"
+read TMP_ARGO
+export TMP_ARGO=${TMP_ARGO:-'rel'}
 UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
 VPATH='vls'
 
-SERVER_PORT=${SERVER_PORT:-"2333"}
+if [ "${TMP_ARGO}" == "rel" ]; then 
+echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
+read SERVER_PORT
+SERVER_PO=${SERVER_PORT:-"443"}
+fi
 echo -n "请输入 节点名称（默认值：vps）: "
 read SUB_NAME
 SUB_NAME=${SUB_NAME:-"vps"}
@@ -94,13 +99,13 @@ NEZHA_PORT=${NEZHA_PORT:-"443"}
 echo -n "是否开启哪吒的tls（默认开启,需要关闭设置0）: "
 read NEZHA_TLS
 NEZHA_TLS=${NEZHA_TLS:-"1"}
-
+if [ "${TMP_ARGO}" != "rel" ]; then
 # 设置固定隧道参数
 echo -n "请输入固定隧道token或者json(不填则使用临时隧道) : "
 read TOK
 echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : "
 read ARGO_DOMAIN
-
+fi
 # 设置其他参数
 FLIE_PATH="${FLIE_PATH:-/tmp/worlds/}"
 CF_IP=${CF_IP:-"ip.sb"}
