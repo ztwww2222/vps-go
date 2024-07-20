@@ -9,14 +9,12 @@ install_config(){
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}  
-UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
-VPATH='vls-flvlkc'
 
 # 提示用户输入变量值，如果没有输入则使用默认值
 if [ "${TMP_ARGO}" == "rel" ]; then 
 echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
 read SERVER_PORT
-SERVER_PO=${SERVER_PORT:-"443"}
+SERVER_PORT=${SERVER_PORT:-"443"}
 fi
 echo -n "请输入节点上传地址: "
 read SUB_URL
@@ -72,8 +70,6 @@ done
 echo -n "请输入节点使用的协议，(可选vls,vms,rel,默认rel):"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}
-UUID=${UUID:-"fd80f56e-93f3-4c85-b2a8-c77216c509a7"}
-VPATH='vls'
 
 if [ "${TMP_ARGO}" == "rel" ]; then 
 echo -n "请输入节点端口(默认443，注意nat鸡端口不要超过范围):"
@@ -147,10 +143,8 @@ export SNI=${SNI:-'www.apple.com'} # tls网站
 export FLIE_PATH='$FLIE_PATH'
 export CF_IP='$CF_IP'
 export SUB_NAME='$SUB_NAME'
-export SERVER_IP='$SERVER_IP'
+
 ## ===========================================设置x-ra-y下载地址（建议直接使用默认）===============================
-export UUID='$UUID'
-export VPATH='$VPATH'
 export SUB_URL='$SUB_URL'
 ## ===================================
 export ne_file='$ne_file'
