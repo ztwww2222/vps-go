@@ -15,6 +15,10 @@ if [ ! -d "${FLIE_PATH}" ]; then
     FLIE_PATH="/tmp/"
   fi
 fi
+export ne_file=${ne_file:-'nenether.js'}
+export cff_file=${cff_file:-'cfnfph.js'}
+export web_file=${web_file:-'webssp.js'}
+
 install_naray(){
 
 install_config(){
@@ -114,9 +118,7 @@ fi
 # 设置其他参数
 
 CF_IP=${CF_IP:-"ip.sb"}
-export ne_file=${ne_file:-'nene.js'}
-export cff_file=${cff_file:-'cff.js'}
-export web_file=${web_file:-'web.js'}
+
 }
 
 # 创建 start.sh 脚本并写入你的代码
