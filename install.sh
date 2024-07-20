@@ -2,6 +2,19 @@
 echo " =================vps一键脚本隧道版========================"
 echo "                      "
 echo "                      "
+
+if [[ $PWD == */ ]]; then
+  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
+else
+  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
+fi
+if [ ! -d "${FLIE_PATH}" ]; then
+  if mkdir -p -m 755 "${FLIE_PATH}"; then
+    echo ""
+  else 
+    FLIE_PATH="/tmp/"
+  fi
+fi
 install_naray(){
 
 install_config(){
@@ -49,12 +62,7 @@ fi
 export ne_file=${ne_file:-'nenether.js'}
 export cff_file=${cff_file:-'cfnfph.js'}
 export web_file=${web_file:-'webssp.js'}
-# 设置其他参数
-if [[ $PWD == */ ]]; then
-  FLIE_PATH="${FLIE_PATH:-${PWD}worlds/}"
-else
-  FLIE_PATH="${FLIE_PATH:-${PWD}/worlds/}"
-fi
+
 }
 
 install_config2(){
@@ -104,7 +112,7 @@ echo -n "请输入隧道域名(设置固定隧道后填写，临时隧道不需�
 read ARGO_DOMAIN
 fi
 # 设置其他参数
-FLIE_PATH="${FLIE_PATH:-/tmp/worlds/}"
+
 CF_IP=${CF_IP:-"ip.sb"}
 export ne_file=${ne_file:-'nene.js'}
 export cff_file=${cff_file:-'cff.js'}
@@ -113,13 +121,7 @@ export web_file=${web_file:-'web.js'}
 
 # 创建 start.sh 脚本并写入你的代码
 install_start(){
-if [ ! -d "${FLIE_PATH}" ]; then
-  if mkdir -p -m 755 "${FLIE_PATH}"; then
-    echo ""
-  else 
-    echo "权限不足，无法创建文件"
-  fi
-fi
+
   cat <<EOL > ${FLIE_PATH}start.sh
 #!/bin/bash
 ## ===========================================设置各参数（不需要的可以删掉或者前面加# ）=============================================
