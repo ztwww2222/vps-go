@@ -9,7 +9,7 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 PLAIN='\033[0m'
 
-echo -e "${CYAN}=================vps一键脚本隧道版========================${PLAIN}"
+echo -e "${CYAN}=======vps一键脚本隧道版============${PLAIN}"
 echo "                      "
 echo "                      "
 
@@ -41,7 +41,7 @@ fi
 
 install_config(){
 
-echo -e -n "${GREEN}请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不能选rel):${PLAIN}"
+echo -e -n "${GREEN}请输入节点使用的协议，(可选vls,vms,rel,默认rel,注意IP被墙不要选rel):${PLAIN}"
 read TMP_ARGO
 export TMP_ARGO=${TMP_ARGO:-'rel'}  
 
@@ -74,7 +74,7 @@ if [ "${TMP_ARGO}" != "rel" ]; then
 # 设置固定隧道参数
 echo -e -n "${GREEN}请输入固定隧道token或者json(不填则使用临时隧道) : ${PLAIN}"
 read TOK
-echo -e -n "${GREEN}请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : ${PLAIN}"
+echo -e -n "${GREEN}请输入隧道域名(设置固定隧道需要，临时隧道不需要) : ${PLAIN}"
 read ARGO_DOMAIN
 echo -e -n "${GREEN}请输入CF优选IP(默认ip.sb) : ${PLAIN}"
 read CF_IP
@@ -126,7 +126,7 @@ if [ "${TMP_ARGO}" != "rel" ]; then
 # 设置固定隧道参数
 echo -e -n "${GREEN}请输入固定隧道token或者json(不填则使用临时隧道) : ${PLAIN}"
 read TOK
-echo -e -n "${GREEN}请输入隧道域名(设置固定隧道后填写，临时隧道不需要) : ${PLAIN}"
+echo -e -n "${GREEN}请输入隧道域名(设置固定隧道需要，临时隧道不需要) : ${PLAIN}"
 read ARGO_DOMAIN
 fi
 # 设置其他参数
@@ -383,7 +383,7 @@ while [ $counter -lt $max_attempts ]; do
 
     echo -e "${CYAN}***************************************************${PLAIN}"
     echo "                          "
-    echo -e "${GREEN}      脚本启动成功${PLAIN}"
+    echo -e "${GREEN}        脚本启动成功${PLAIN}"
     echo "                          "
     break
   elif ps aux | grep "$keyword" | grep -v grep > /dev/null && [ -s /tmp/list.log ]; then
