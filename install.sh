@@ -287,13 +287,13 @@ while [ $counter -lt $max_attempts ]; do
 
     echo "***************************************************"
     echo "                          "
-    echo "脚本启动成功"
+    echo "       脚本启动成功"
     echo "                          "
     break
   elif ps aux | grep "$keyword" | grep -v grep > /dev/null && [ -s /tmp/list.log ]; then
     echo "***************************************************"
     echo "                          "
-    echo "脚本启动成功"
+    echo "        脚本启动成功"
     echo "                          "
     
     break
@@ -304,7 +304,7 @@ while [ $counter -lt $max_attempts ]; do
 done
 
 echo "                         "
-echo "**************节点信息*********************   "
+echo "************节点信息****************"
 echo "                         "
 if [ -s "${FLIE_PATH}list.log" ]; then
   sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
@@ -365,13 +365,13 @@ while [ $counter -lt $max_attempts ]; do
 
     echo "***************************************************"
     echo "                          "
-    echo "脚本启动成功"
+    echo "      脚本启动成功"
     echo "                          "
     break
   elif ps aux | grep "$keyword" | grep -v grep > /dev/null && [ -s /tmp/list.log ]; then
     echo "***************************************************"
     echo "                          "
-    echo "脚本启动成功"
+    echo "       脚本启动成功"
     echo "                          "
     
     break
@@ -382,7 +382,7 @@ while [ $counter -lt $max_attempts ]; do
 done
 
 echo "                         "
-echo "**************节点信息*********************   "
+echo "************节点信息******************"
 echo "                         "
 if [ -s "${FLIE_PATH}list.log" ]; then
   sed 's/{PASS}/vless/g' ${FLIE_PATH}list.log | cat
@@ -396,9 +396,9 @@ echo "***************************************************"
         ;;
     1)
         # 添加到开机启动再启动
-        echo "添加到开机启动..."
+        echo "      添加到开机启动..."
         configure_startup
-        echo "已添加到开机启动"
+        echo "      已添加到开机启动"
         ;;
 	  0)
 	    exit 1
