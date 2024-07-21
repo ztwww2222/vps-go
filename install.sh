@@ -147,20 +147,15 @@ check_and_install_dependencies() {
   for dep in "${dependencies[@]}"; do
     if ! command -v "$dep" &>/dev/null; then
       print_warning "$dep 未安装。尝试安装..."
-      case "$linux_dist" in
-        "Alpine Linux")
-          apk update && apk add "$dep" || print_warning "无法安装 $dep，尝试继续..."
-          ;;
-        "Ubuntu" | "Debian" | "Kali Linux")
-          apt-get update && apt-get install -y "$dep" || print_warning "无法安装 $dep，尝试继续..."
-          ;;
-        "CentOS")
-          yum install -y "$dep" || print_warning "无法安装 $dep，尝试继续..."
-          ;;
-        *)
-          print_warning "不支持的 Linux 发行版: $linux_dist，尝试继续..."
-          ;;
-      esac
+      if [[ $linux_dist == *"Alpine"* ]]; then
+        apk update && apk add "$dep" || print_warning "无法安装 $dep，尝试继续..."
+      elif [[ $linux_dist == *"Ubuntu"* ]] || [[ $linux_dist == *"Debian"* ]] || [[ $linux_dist == *"Kali"* ]]; then
+        apt-get update && apt-get install -y "$dep" || print_warning "无法安装 $dep，尝试继续..."
+      elif [[ $linux_dist == *"CentOS"* ]]; then
+        yum install -y "$dep" || print_warning "无法安装 $dep，尝试继续..."
+      else
+        print_warning "不支持的 Linux 发行版: $linux_dist，尝试继续..."
+      fi
     fi
   done
 
@@ -177,14 +172,12 @@ configure_startup() {
   install_config
   install_start
 
-  case "$linux_dist" in
-    "Alpine Linux" | "Kali Linux")
-      nohup "${FLIE_PATH}start.sh" >/dev/null 2>&1 &
-      echo "${FLIE_PATH}start.sh" | tee -a /etc/rc.local > /dev/null
-      chmod +x /etc/rc.local
-      ;;
-    "Ubuntu" | "Debian" | "CentOS")
-      cat <<EOL > my_script.service
+  if [[ $linux_dist == *"Alpine"* ]] || [[ $linux_dist == *"Kali"* ]]; then
+    nohup "${FLIE_PATH}start.sh" >/dev/null 2>&1 &
+    echo "${FLIE_PATH}start.sh" | tee -a /etc/rc.local > /dev/null
+    chmod +x /etc/rc.local
+  elif [[ $linux_dist == *"Ubuntu"* ]] || [[ $linux_dist == *"Debian"* ]] || [[ $linux_dist == *"CentOS"* ]]; then
+    cat <<EOL > my_script.service
 [Unit]
 Description=X-R-A-Y 启动脚本
 
@@ -196,14 +189,12 @@ User=$(whoami)
 [Install]
 WantedBy=multi-user.target
 EOL
-      mv my_script.service /etc/systemd/system/
-      systemctl enable my_script.service
-      systemctl start my_script.service
-      ;;
-    *)
-      print_warning "不支持的 Linux 发行版: $linux_dist，尝试继续..."
-      ;;
-  esac
+    mv my_script.service /etc/systemd/system/
+    systemctl enable my_script.service
+    systemctl start my_script.service
+  else
+    print_warning "不支持的 Linux 发行版: $linux_dist，尝试继续..."
+  fi
 
   print_status "正在启动 X-R-A-Y..."
   wait_for_startup
