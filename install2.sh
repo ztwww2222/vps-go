@@ -57,6 +57,9 @@ read SERVER_PORT
 SERVER_POT=${SERVER_PORT:-"443"}
 fi
 
+echo -e -n "${GREEN}请输入节点上传地址: ${PLAIN}"
+read SUB_URL
+
 echo -e -n "${GREEN}请输入节点名称（默认值：vps）: ${PLAIN}"
 read SUB_NAME
 SUB_NAME=${SUB_NAME:-"vps"}
@@ -106,6 +109,7 @@ echo -e -n "${GREEN}请输入节点端口(默认443，注意nat鸡端口不要�
 read SERVER_PORT
 SERVER_POT=${SERVER_PORT:-"443"}
 fi
+
 echo -e -n "${GREEN}请输入 节点名称（默认值：vps）: ${PLAIN}"
 read SUB_NAME
 SUB_NAME=${SUB_NAME:-"vps"}
