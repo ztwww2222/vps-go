@@ -47,16 +47,15 @@ install_naray(){
     fi
 
     install_config(){
-        echo -e -n "${GREEN}请输入节点类型 (可选: vls, vms, rel, hys, 默认: vls):${PLAIN}"
+        echo -e -n "${GREEN}请输入节点类型 (可选: vls, vms, rel, hys, tuic 默认: vls):${PLAIN}"
         read TMP_ARGO
         export TMP_ARGO=${TMP_ARGO:-'vls'}  
 
-        if [ "${TMP_ARGO}" = "rel" ] || [ "${TMP_ARGO}" = "hys" ]; then
+        if [ "${TMP_ARGO}" = "rel" ] || [ "${TMP_ARGO}" = "hy2" ] || [ "${TMP_ARGO}" = "hys" ] || [ "${TMP_ARGO}" = "tuic" ]; then
         echo -e -n "${GREEN}请输入节点端口 (默认443):${PLAIN}"
         read SERVER_PORT
         SERVER_POT=${SERVER_PORT:-"443"}
         fi
-
         echo -e -n "${GREEN}请输入节点名称 (默认: vps): ${PLAIN}"
         read SUB_NAME
         SUB_NAME=${SUB_NAME:-"vps"}
@@ -86,7 +85,7 @@ install_naray(){
     }
 
     install_config2(){
-        processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+        processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js" "start.sh")
         for process in "${processes[@]}"
         do
             pid=$(pgrep -f "$process")
@@ -99,7 +98,7 @@ install_naray(){
         read TMP_ARGO
         export TMP_ARGO=${TMP_ARGO:-'vls'}
 
-        if [ "${TMP_ARGO}" = "rel" ] || [ "${TMP_ARGO}" = "hys" ]; then
+        if [ "${TMP_ARGO}" = "rel" ] || [ "${TMP_ARGO}" = "hy2" ] || [ "${TMP_ARGO}" = "hys" ] || [ "${TMP_ARGO}" = "tuic" ]; then
         echo -e -n "${GREEN}请输入端口 (default 443, note that nat chicken port should not exceed the range):${PLAIN}"
         read SERVER_PORT
         SERVER_POT=${SERVER_PORT:-"443"}
@@ -491,7 +490,7 @@ reinstall_naray(){
         systemctl stop my_script.service
         echo -e "${GREEN}Service has been stopped.${PLAIN}"
     fi
-    processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+    processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js" "start.sh")
     for process in "${processes[@]}"
     do
         pid=$(pgrep -f "$process")
@@ -570,7 +569,7 @@ rm_naray(){
     fi
 
     # Stop running processes
-    processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js")
+    processes=("$web_file" "$ne_file" "$cff_file" "app" "app.js" "start.sh")
     for process in "${processes[@]}"
     do
         pid=$(pgrep -f "$process")
